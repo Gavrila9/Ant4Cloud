@@ -5,8 +5,8 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 
 /**
- * ÒÏÈºÓÅ»¯Ëã·¨£¬ÓÃÀ´Çó½âÈÎÎñ·ÖÅä¸øĞéÄâ»ú´ïµ½Ê±¼ä×î¶ÌµÄÎÊÌâ
- * @author ShiJianYuan
+ * èšç¾¤ä¼˜åŒ–ç®—æ³•ï¼Œç”¨æ¥æ±‚è§£ä»»åŠ¡åˆ†é…ç»™è™šæ‹Ÿæœºè¾¾åˆ°æ—¶é—´æœ€çŸ­çš„é—®é¢˜
+ * @author Gavrila
  */
 public class ACO {
 	public class position{
@@ -17,20 +17,20 @@ public class ACO {
 			task = b;
 		}
 	}
-	private List<Ant> ants;//¶¨ÒåÂìÒÏÈº
-	private int antcount;//ÂìÒÏµÄÊıÁ¿
+	private List<Ant> ants;//å®šä¹‰èš‚èšç¾¤
+	private int antcount;//èš‚èšçš„æ•°é‡
 	private int Q = 100;
-	private double[][] pheromone;//ĞÅÏ¢ËØ¾ØÕó
-	private double[][] Delta;//×ÜµÄĞÅÏ¢ËØÔöÁ¿
-	private int VMs;//ĞéÄâ»úÊıÁ¿
-	private int tasks;//ÈÎÎñ¸öÊı
-	public position[] bestTour;//×î¼Ñ½â
-	private double bestLength;//×îÓÅ½âµÄ³¤¶È£¨Ê±¼äµÄ´óĞ¡£©
+	private double[][] pheromone;//ä¿¡æ¯ç´ çŸ©é˜µ
+	private double[][] Delta;//æ€»çš„ä¿¡æ¯ç´ å¢é‡
+	private int VMs;//è™šæ‹Ÿæœºæ•°é‡
+	private int tasks;//ä»»åŠ¡ä¸ªæ•°
+	public position[] bestTour;//æœ€ä½³è§£
+	private double bestLength;//æœ€ä¼˜è§£çš„é•¿åº¦ï¼ˆæ—¶é—´çš„å¤§å°ï¼‰
 	private List<? extends Cloudlet> cloudletList;
 	private List<? extends Vm> vmList;
 	/**
-	 * ³õÊ¼»¯¾ØÕó
-	 * @param antNumÎªÏµÍ³ÒªÓÃµ½ÂìÒÏµÄÊıÁ¿
+	 * åˆå§‹åŒ–çŸ©é˜µ
+	 * @param antNumä¸ºç³»ç»Ÿè¦ç”¨åˆ°èš‚èšçš„æ•°é‡
 	 */
 	public void init(int antNum, List<? extends Cloudlet> list1, List<? extends Vm> list2){
 		//cloudletList = new ArrayList<? extends Cloudlet>;
@@ -43,7 +43,7 @@ public class ACO {
 		pheromone = new double[VMs][tasks];
 		Delta = new double[VMs][tasks];
 		bestLength = 1000000;
-		//³õÊ¼»¯ĞÅÏ¢ËØ¾ØÕó
+		//åˆå§‹åŒ–ä¿¡æ¯ç´ çŸ©é˜µ
 		for(int i=0; i<VMs; i++){
 			for(int j=0; j<tasks; j++){
 				pheromone[i][j] = 0.1;
@@ -53,39 +53,39 @@ public class ACO {
 		for(int i=0; i<tasks; i++){
 			bestTour[i] = new position(-1, -1);
 		}
-		//Ëæ»ú·ÅÖÃÂìÒÏ  
+		//éšæœºæ”¾ç½®èš‚èš  
         for(int i=0; i<antcount; i++){  
             ants.add(new Ant());  
             ants.get(i).RandomSelectVM(cloudletList, vmList);
         }  			
 	}
 	/**
-	 * ACOµÄÔËĞĞ¹ı³Ì
-	 * @param maxgen ACOµÄ×î¶àµü´ú´ÎÊı
+	 * ACOçš„è¿è¡Œè¿‡ç¨‹
+	 * @param maxgen ACOçš„æœ€å¤šè¿­ä»£æ¬¡æ•°
 	 */
 	public void run(int maxgen){
 		for(int runTime=0; runTime<maxgen; runTime++){
-			System.out.println("µÚ"+runTime+"´Î£º");
-			//Ã¿Ö»ÂìÒÏÒÆ¶¯µÄ¹ı³Ì
+			System.out.println("ç¬¬"+runTime+"æ¬¡ï¼š");
+			//æ¯åªèš‚èšç§»åŠ¨çš„è¿‡ç¨‹
 			for(int i=0; i<antcount; i++){
 				for(int j=1; j<tasks; j++){	
 					ants.get(i).SelectNextVM(pheromone);
 				}
 			}
 			for(int i=0; i<antcount; i++){
-				System.out.println("µÚ"+i+"Ö»ÂìÒÏ");
+				System.out.println("ç¬¬"+i+"åªèš‚èš");
 				ants.get(i).CalTourLength();
-				System.out.println("µÚ"+i+"Ö»ÂìÒÏµÄÂ·³Ì£º"+ants.get(i).tourLength);
+				System.out.println("ç¬¬"+i+"åªèš‚èšçš„è·¯ç¨‹ï¼š"+ants.get(i).tourLength);
 				ants.get(i).CalDelta();
 				if(ants.get(i).tourLength<bestLength){  
-					//±£Áô×îÓÅÂ·¾¶  
+					//ä¿ç•™æœ€ä¼˜è·¯å¾„  
 	                bestLength = ants.get(i).tourLength;  
-	                System.out.println("µÚ"+runTime+"´ú"+"µÚ"+i+"Ö»ÂìÒÏ·¢ÏÖĞÂµÄ½â£º"+bestLength);   
+	                System.out.println("ç¬¬"+runTime+"ä»£"+"ç¬¬"+i+"åªèš‚èšå‘ç°æ–°çš„è§£ï¼š"+bestLength);   
 	                for(int j=0;j<tasks;j++){  
 	                	bestTour[j].vm = ants.get(i).tour.get(j).vm;
 	                    bestTour[j].task = ants.get(i).tour.get(j).task;
 	                } 
-	                //¶Ô·¢ÏÖ×îÓÅ½âµÄÂ·¸üĞÂĞÅÏ¢ËØ
+	                //å¯¹å‘ç°æœ€ä¼˜è§£çš„è·¯æ›´æ–°ä¿¡æ¯ç´ 
 	                for(int k=0; k<VMs; k++){
 	                	for(int j=0; j<tasks; j++){
 	                		pheromone[k][j] = pheromone[k][j] + Q/bestLength;
@@ -93,16 +93,16 @@ public class ACO {
 	                }  
 				}
 			}
-			UpdatePheromone();//¶ÔÃ¿ÌõÂ·¸üĞÂĞÅÏ¢ËØ
+			UpdatePheromone();//å¯¹æ¯æ¡è·¯æ›´æ–°ä¿¡æ¯ç´ 
 				
-			//ÖØĞÂËæ»úÉèÖÃÂìÒÏ  
+			//é‡æ–°éšæœºè®¾ç½®èš‚èš  
 			for(int i=0;i<antcount;i++){  
 				ants.get(i).RandomSelectVM(cloudletList, vmList);  
 		    }  	
 		}
 	}
 	/** 
-     * ¸üĞÂĞÅÏ¢ËØ¾ØÕó 
+     * æ›´æ–°ä¿¡æ¯ç´ çŸ©é˜µ 
      */  
 	public void UpdatePheromone(){
 		double rou=0.5;  
@@ -121,13 +121,13 @@ public class ACO {
         }  
 	}
 	/** 
-     * Êä³ö³ÌĞòÔËĞĞ½á¹û 
+     * è¾“å‡ºç¨‹åºè¿è¡Œç»“æœ 
      */  
     public void ReportResult(){  
-        System.out.println("×îÓÅÂ·¾¶³¤¶ÈÊÇ"+bestLength);
+        System.out.println("æœ€ä¼˜è·¯å¾„é•¿åº¦æ˜¯"+bestLength);
         for(int j=0; j<tasks; j++)
         {
-        	System.out.println(bestTour[j].task+"·ÖÅä¸ø£º"+bestTour[j].vm);
+        	System.out.println(bestTour[j].task+"åˆ†é…ç»™ï¼š"+bestTour[j].vm);
         }
     }  	
 }
