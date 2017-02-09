@@ -6,8 +6,8 @@ import org.cloudbus.cloudsim.Cloudlet;
 import org.cloudbus.cloudsim.Vm;
 
 /**
- *ÂìÒÏÀà
- *@author ShiJianYuan
+ *èš‚èšç±»
+ *@author Gavrila
  */
  public class Ant{
 	public class position{
@@ -18,20 +18,20 @@ import org.cloudbus.cloudsim.Vm;
 			task = b;
 		}
 	} 
-	public double[][] delta;//Ã¿¸ö½ÚµãÔö¼ÓµÄĞÅÏ¢ËØ
+	public double[][] delta;//æ¯ä¸ªèŠ‚ç‚¹å¢åŠ çš„ä¿¡æ¯ç´ 
 	public int Q = 100;
-	public List<position> tour;//ÂìÒÏ»ñµÃµÄÂ·¾¶£¨½â£¬ÈÎÎñ·ÖÅä¸øĞéÄâ»úµÄ·Ö·¨£©
-	public double tourLength;//ÂìÒÏ»ñµÃµÄÂ·¾¶³¤¶È£¨·ÖÅäºÃºó£¬×ÜµÄ»¨·ÑÊ±¼ä£©
-	public long[] TL_task;//Ã¿¸öĞéÄâ»úµÄÈÎÎñ×ÜÁ¿
-	public List<Integer> tabu;//½û¼É±í
-	private int VMs;//³ÇÊĞµÄ¸öÊı£¨Ïàµ±ÓÚĞéÄâ»úµÄ¸öÊı£©
-	private int tasks;//ÈÎÎñ¸öÊı
-	private List<? extends Cloudlet> cloudletList;	//ÔÆÈÎÎñÁĞ±í
-	private List<? extends Vm> vmList;				//ĞéÄâ»úÁĞ±í
+	public List<position> tour;//èš‚èšè·å¾—çš„è·¯å¾„ï¼ˆè§£ï¼Œä»»åŠ¡åˆ†é…ç»™è™šæ‹Ÿæœºçš„åˆ†æ³•ï¼‰
+	public double tourLength;//èš‚èšè·å¾—çš„è·¯å¾„é•¿åº¦ï¼ˆåˆ†é…å¥½åï¼Œæ€»çš„èŠ±è´¹æ—¶é—´ï¼‰
+	public long[] TL_task;//æ¯ä¸ªè™šæ‹Ÿæœºçš„ä»»åŠ¡æ€»é‡
+	public List<Integer> tabu;//ç¦å¿Œè¡¨
+	private int VMs;//åŸå¸‚çš„ä¸ªæ•°ï¼ˆç›¸å½“äºè™šæ‹Ÿæœºçš„ä¸ªæ•°ï¼‰
+	private int tasks;//ä»»åŠ¡ä¸ªæ•°
+	private List<? extends Cloudlet> cloudletList;	//äº‘ä»»åŠ¡åˆ—è¡¨
+	private List<? extends Vm> vmList;				//è™šæ‹Ÿæœºåˆ—è¡¨
 	/**
-	 *Ëæ»ú·ÖÅäÂìÒÏµ½Ä³¸ö½ÚµãÖĞ£¬Í¬Ê±Íê³ÉÂìÒÏ°üº¬×Ö¶ÎµÄ³õÊÔ»¯¹¤×÷
-	 *@param list1 ÈÎÎñÁĞ±í
-	 *@param list2 ĞéÄâ»úÁĞ±í
+	 *éšæœºåˆ†é…èš‚èšåˆ°æŸä¸ªèŠ‚ç‚¹ä¸­ï¼ŒåŒæ—¶å®Œæˆèš‚èšåŒ…å«å­—æ®µçš„åˆè¯•åŒ–å·¥ä½œ
+	 *@param list1 ä»»åŠ¡åˆ—è¡¨
+	 *@param list2 è™šæ‹Ÿæœºåˆ—è¡¨
 	 */
 	public void RandomSelectVM(List<? extends Cloudlet> list1, List<? extends Vm> list2){
 		cloudletList = list1;
@@ -44,7 +44,7 @@ import org.cloudbus.cloudsim.Vm;
 		tabu = new ArrayList<Integer>();
 		tour=new ArrayList<position>();
 		
-		//Ëæ»úÑ¡ÔñÂìÒÏµÄÎ»ÖÃ
+		//éšæœºé€‰æ‹©èš‚èšçš„ä½ç½®
 		int firstVM = (int)(VMs*Math.random());
 		int firstExecute = (int)(tasks*Math.random());
 		tour.add(new position(firstVM, firstExecute));
@@ -53,8 +53,8 @@ import org.cloudbus.cloudsim.Vm;
 	}
 	/**
 	  * calculate the expected execution time and transfer time of the task on vm
-	  * @param vm ĞéÄâ»úĞòºÅ
-	  * @param task ÈÎÎñĞòºÅ
+	  * @param vm è™šæ‹Ÿæœºåºå·
+	  * @param task ä»»åŠ¡åºå·
 	  */
 	public double Dij(int vm, int task){
 		double d;
@@ -62,23 +62,23 @@ import org.cloudbus.cloudsim.Vm;
 		return d;
 	}
 	 /**
-	  * Ñ¡ÔñÏÂÒ»¸ö½Úµã
-	  * @param pheromone È«¾ÖµÄĞÅÏ¢ËØĞÅÏ¢
+	  * é€‰æ‹©ä¸‹ä¸€ä¸ªèŠ‚ç‚¹
+	  * @param pheromone å…¨å±€çš„ä¿¡æ¯ç´ ä¿¡æ¯
 	  */
 	  public void SelectNextVM(double[][] pheromone){
-		  double[][] p;//Ã¿¸ö½Úµã±»Ñ¡ÖĞµÄ¸ÅÂÊ
+		  double[][] p;//æ¯ä¸ªèŠ‚ç‚¹è¢«é€‰ä¸­çš„æ¦‚ç‡
 		  p = new double[VMs][tasks];
 		  double alpha = 1.0;
 		  double beta = 1.0;
-		  double sum = 0;//·ÖÄ¸
-		  //¼ÆËã¹«Ê½ÖĞµÄ·ÖÄ¸²¿·Ö  
+		  double sum = 0;//åˆ†æ¯
+		  //è®¡ç®—å…¬å¼ä¸­çš„åˆ†æ¯éƒ¨åˆ†  
 		  for(int i=0; i<VMs; i++){
 			  for(int j=0; j<tasks; j++){
 				  if(tabu.contains(new Integer(j))) continue;
 				  sum += Math.pow(pheromone[i][j], alpha)*Math.pow(1/Dij(i,j),beta);
 			  }
 		  }
-		  //¼ÆËãÃ¿¸ö½Úµã±»Ñ¡µÄ¸ÅÂÊ
+		  //è®¡ç®—æ¯ä¸ªèŠ‚ç‚¹è¢«é€‰çš„æ¦‚ç‡
 		  for(int i=0; i<VMs; i++){
 			  for(int j=0; j<tasks; j++){
 				  p[i][j] = Math.pow(pheromone[i][j], alpha)*Math.pow(1/Dij(i,j),beta)/sum;
@@ -86,7 +86,7 @@ import org.cloudbus.cloudsim.Vm;
 			  }
 		  }
 		double selectp = Math.random();
-        //ÂÖÅÌ¶ÄÑ¡ÔñÒ»¸öVM
+        //è½®ç›˜èµŒé€‰æ‹©ä¸€ä¸ªVM
         double sumselect = 0;
         int selectVM = -1;
         int selectTask = -1;
@@ -103,7 +103,7 @@ import org.cloudbus.cloudsim.Vm;
         	}
         }
         if (selectVM==-1 | selectTask == -1)  
-            System.out.println("Ñ¡ÔñÏÂÒ»¸öĞéÄâ»úÃ»ÓĞ³É¹¦£¡");
+            System.out.println("é€‰æ‹©ä¸‹ä¸€ä¸ªè™šæ‹Ÿæœºæ²¡æœ‰æˆåŠŸï¼");
     		tabu.add(new Integer(selectTask));
 		tour.add(new position(selectVM, selectTask));
 		TL_task[selectVM] += cloudletList.get(selectTask).getCloudletLength();  		
@@ -121,12 +121,12 @@ import org.cloudbus.cloudsim.Vm;
 		tourLength = max[0];
 		for(int i=0; i<VMs; i++){
 			if(max[i]>tourLength)tourLength = max[i];
-			System.out.println("µÚ"+i+"Ì¨ĞéÄâ»úµÄÖ´ĞĞÊ±¼ä£º"+max[i]);
+			System.out.println("ç¬¬"+i+"å°è™šæ‹Ÿæœºçš„æ‰§è¡Œæ—¶é—´ï¼š"+max[i]);
 		}
 		return;
 	}
 	/**
-	 * ¼ÆËãĞÅÏ¢ËØÔöÁ¿¾ØÕó
+	 * è®¡ç®—ä¿¡æ¯ç´ å¢é‡çŸ©é˜µ
 	 */
     public void CalDelta(){
     	for(int i=0; i<VMs; i++){
